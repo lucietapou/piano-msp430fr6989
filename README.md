@@ -21,7 +21,7 @@ Piano digital de 3 octavas implementado sobre la placa de desarrollo **MSP430FR6
 |---|---|
 | MCU | MSP430FR6989 (FRAM, 16 bits) |
 | Placa | MSP430FR6989 LaunchPad (MSP‑EXP430FR6989) |
-| Audio | Altavoz o auricular en P1.0 (TA0.1) |
+| Audio | Buzzer en P1.0 (TA0.1) |
 | Teclado | Matriz 4×4 — filas en P3.2, P4.7, P2.4, P2.5 / columnas en P2.0, P9.3, P4.3, P9.2 |
 | LCD | LCD de segmentos integrado en la LaunchPad |
 | LEDs | LED1 en P1.0 (rojo), LED2 en P9.7 (verde) |
@@ -92,40 +92,3 @@ TabOct6: SMCLK/1047, ...             (Do6 a Si6)
 `Timer A2` en modo continuo con `ACLK` (32.768 kHz). `TA2CCR0` genera una IRQ periódica que incrementa un contador de 32 bits (`SystemTimer`). `stTime()` devuelve el tiempo actual en ticks, con resolución de ~30 µs y desbordamiento a los ~36 horas.
 
 ---
-
-## Compilación
-
-El proyecto está configurado para **Code Composer Studio (CCS)** con el compilador TI MSP430 `cl430`.
-
-1. Importar el proyecto en CCS: *File → Import → CCS Projects*.
-2. Seleccionar el dispositivo `MSP430FR6989`.
-3. Compilar con *Project → Build All* (Ctrl+B).
-4. Cargar con *Run → Debug* (F11).
-
-Flags relevantes del compilador:
-```
--vmspx --code_model=small --data_model=small
---use_hw_mpy=F5 --define=__MSP430FR6989__
-```
-
----
-
-## Dependencias
-
-- [Code Composer Studio](https://www.ti.com/tool/CCSTUDIO) v12 o superior
-- Compilador `ti-cgt-msp430` v21.6 o superior
-- MSP430 DriverLib (incluido en CCS)
-
----
-
-## Arquitectura de módulos
-
-```
-main.c
-  ├── cs    →  Inicia LFXT (reloj base del sistema)
-  ├── st    →  Sistema de tiempo global (Timer A2 CCR0)
-  ├── lcd   →  Visualización en LCD de segmentos
-  ├── pt    →  Abstracción de GPIO (configura LEDs)
-  ├── teclado → Lectura de teclas (Timer A2 CCR1, IRQs de puerto)
-  └── snd   →  Síntesis de audio (Timer A0 CCR1)
-```
